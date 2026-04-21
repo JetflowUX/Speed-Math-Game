@@ -1,0 +1,90 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0a0a1a;
+}
+* {
+  box-sizing: border-box;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.gameover-title {
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 30px #ff3355, 0 0 60px #ff3355;
+}
+
+.new-highscore-banner {
+  box-shadow: 0 0 30px #ffaa00;
+}
+
+.gameover-button {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.gameover-button-primary {
+  box-shadow: 0 0 30px #00ff88;
+}
+
+.stat-value {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.stat-icon-cyan {
+  color: #00f0ff;
+  filter: drop-shadow(0 0 8px #00f0ff);
+}
+
+.stat-icon-amber {
+  color: #ffaa00;
+  filter: drop-shadow(0 0 8px #ffaa00);
+}
+
+.stat-icon-green {
+  color: #00ff88;
+  filter: drop-shadow(0 0 8px #00ff88);
+}
+
+.stat-icon-pink {
+  color: #ff00aa;
+  filter: drop-shadow(0 0 8px #ff00aa);
+}
+
+.stat-value-cyan {
+  color: #00f0ff;
+  text-shadow: 0 0 10px #00f0ff;
+}
+
+.stat-value-amber {
+  color: #ffaa00;
+  text-shadow: 0 0 10px #ffaa00;
+}
+
+.stat-value-green {
+  color: #00ff88;
+  text-shadow: 0 0 10px #00ff88;
+}
+
+.stat-value-pink {
+  color: #ff00aa;
+  text-shadow: 0 0 10px #ff00aa;
+}
