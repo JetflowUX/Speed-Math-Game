@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 interface TimerBarProps {
   duration: number;
   onTimeout: () => void;
@@ -8,7 +8,7 @@ interface TimerBarProps {
 export function TimerBar({
   duration,
   onTimeout,
-  isPaused = false
+  isPaused = false,
 }: TimerBarProps) {
   const [timeLeft, setTimeLeft] = useState(duration);
   useEffect(() => {
@@ -28,11 +28,11 @@ export function TimerBar({
     }, 100);
     return () => clearInterval(interval);
   }, [onTimeout, isPaused, duration]);
-  const percentage = timeLeft / duration * 100;
+  const percentage = (timeLeft / duration) * 100;
   const getColor = () => {
-    if (percentage > 60) return '#00ff88';
-    if (percentage > 30) return '#ffaa00';
-    return '#ff3355';
+    if (percentage > 60) return "#00ff88";
+    if (percentage > 30) return "#ffaa00";
+    return "#ff3355";
   };
   return (
     <div className="w-full h-4 bg-gray-800 rounded-full overflow-hidden">
@@ -41,12 +41,12 @@ export function TimerBar({
         style={{
           width: `${percentage}%`,
           backgroundColor: getColor(),
-          boxShadow: `0 0 20px ${getColor()}`
+          boxShadow: `0 0 8px ${getColor()}55`,
         }}
         transition={{
-          duration: 0.1
-        }} />
-      
-    </div>);
-
+          duration: 0.1,
+        }}
+      />
+    </div>
+  );
 }
