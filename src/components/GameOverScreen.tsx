@@ -149,13 +149,13 @@ export function GameOverScreen({
             className="flex items-center justify-between p-4 bg-gray-900/50 rounded-lg border border-gray-800"
           >
             <div className="flex items-center gap-3">
-              <stat.icon
-                className={`w-6 h-6 ${stat.iconClass}`}
-              />
+              <stat.icon className={`w-6 h-6 ${stat.iconClass}`} />
 
               <span className="text-gray-300">{stat.label}</span>
             </div>
-            <span className={`text-2xl font-bold stat-value ${stat.valueClass}`}>
+            <span
+              className={`text-2xl font-bold stat-value ${stat.valueClass}`}
+            >
               {stat.value}
             </span>
           </motion.div>
