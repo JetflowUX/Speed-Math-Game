@@ -7,7 +7,7 @@ interface LivesDisplayProps {
 }
 export function LivesDisplay({ lives, maxLives }: LivesDisplayProps) {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-1 xs:gap-2">
       {Array.from({
         length: maxLives,
       }).map((_, i) => (
@@ -25,7 +25,7 @@ export function LivesDisplay({ lives, maxLives }: LivesDisplayProps) {
           }}
         >
           <HeartIcon
-            className={`w-8 h-8 ${i < lives ? "fill-[#ff3355] text-[#ff3355]" : "fill-gray-700 text-gray-700"}`}
+            className={`w-6 xs:w-8 h-6 xs:h-8 ${i < lives ? "fill-[#ff3355] text-[#ff3355]" : "fill-gray-700 text-gray-700"}`}
             style={
               i < lives
                 ? {

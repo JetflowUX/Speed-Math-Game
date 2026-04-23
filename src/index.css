@@ -131,3 +131,9 @@ input[type="number"] {
 .start-button-soft {
   box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25);
 }
+
+/* Responsive touch targets - ensures 44x44px minimum on small screens */
+.touch-target {
+  min-height: 2.75rem; /* 44px */
+  min-width: 2.75rem; /* 44px */
+}

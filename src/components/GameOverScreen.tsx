@@ -86,7 +86,7 @@ export function GameOverScreen({
           stiffness: 200,
           delay: 0.2,
         }}
-        className="text-5xl md:text-7xl font-bold mb-8 text-center gameover-title"
+        className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-bold mb-6 xs:mb-8 text-center gameover-title px-4 xs:px-0"
       >
         <span className="text-[#ff3355]">GAME OVER</span>
       </motion.h1>
@@ -182,7 +182,7 @@ export function GameOverScreen({
             scale: 0.95,
           }}
           onClick={onRestart}
-          className="px-8 py-3 text-xl font-bold rounded-lg bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all gameover-button gameover-button-primary"
+          className="flex-1 px-6 xs:px-8 py-2 xs:py-3 text-base xs:text-xl font-bold rounded-lg bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all gameover-button gameover-button-primary touch-target"
         >
           PLAY AGAIN
         </motion.button>
@@ -206,7 +206,7 @@ export function GameOverScreen({
             scale: 0.95,
           }}
           onClick={onMenu}
-          className="px-8 py-3 text-xl font-bold rounded-lg border-2 border-[#00f0ff] text-[#00f0ff] hover:bg-[#00f0ff]/10 transition-all gameover-button"
+          className="flex-1 px-6 xs:px-8 py-2 xs:py-3 text-base xs:text-xl font-bold rounded-lg border-2 border-[#00f0ff] text-[#00f0ff] hover:bg-[#00f0ff]/10 transition-all gameover-button touch-target"
         >
           MAIN MENU
         </motion.button>

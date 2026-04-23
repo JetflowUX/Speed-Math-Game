@@ -83,7 +83,7 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
           type: "spring",
           stiffness: 200,
         }}
-        className="text-5xl md:text-7xl font-bold mb-3 text-center"
+        className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-bold mb-2 xs:mb-3 text-center px-4 xs:px-0"
         style={{
           fontFamily: "Orbitron, sans-serif",
           textShadow: "0 0 10px rgba(0, 240, 255, 0.45)",
@@ -106,7 +106,7 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
           stiffness: 200,
           delay: 0.1,
         }}
-        className="text-3xl md:text-5xl font-bold mb-4 text-center"
+        className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-3 xs:mb-4 text-center px-4 xs:px-0"
         style={{
           fontFamily: "Orbitron, sans-serif",
           textShadow: "0 0 8px rgba(255, 0, 170, 0.4)",
@@ -127,7 +127,7 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
         transition={{
           delay: 0.25,
         }}
-        className="text-slate-300 mb-10 text-center max-w-xl"
+        className="text-slate-300 mb-6 xs:mb-8 sm:mb-10 text-center max-w-xl text-xs xs:text-sm sm:text-base px-4 xs:px-0"
       >
         Pick your pace and solve as many problems as you can before time runs
         out.
@@ -145,7 +145,7 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
         transition={{
           delay: 0.3,
         }}
-        className="w-full max-w-md space-y-4 mb-8"
+        className="w-full max-w-md space-y-3 xs:space-y-4 mb-6 xs:mb-8 px-4 xs:px-0"
       >
         {difficulties.map((diff, index) => (
           <motion.button
@@ -162,16 +162,16 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
               delay: 0.4 + index * 0.1,
             }}
             onClick={() => setSelectedDifficulty(diff.value)}
-            className={`w-full p-6 rounded-xl border transition-all ${selectedDifficulty === diff.value ? "border-cyan-400/60 bg-cyan-400/10 difficulty-selected-soft" : "border-slate-700/80 bg-slate-900/45 hover:border-slate-500"}`}
+            className={`w-full p-4 xs:p-6 rounded-lg xs:rounded-xl border transition-all touch-target ${selectedDifficulty === diff.value ? "border-cyan-400/60 bg-cyan-400/10 difficulty-selected-soft" : "border-slate-700/80 bg-slate-900/45 hover:border-slate-500"}`}
           >
-            <div className="text-2xl font-bold mb-2 orbitron-text">
+            <div className="text-xl xs:text-2xl font-bold mb-1 xs:mb-2 orbitron-text">
               {diff.label}
             </div>
-            <div className="text-sm text-gray-400">{diff.description}</div>
+            <div className="text-xs xs:text-sm text-gray-400">{diff.description}</div>
             {highScores[diff.value] > 0 && (
-              <div className="flex items-center justify-center gap-2 mt-3 text-[#ffaa00]">
+              <div className="flex items-center justify-center gap-2 mt-2 xs:mt-3 text-[#ffaa00]">
                 <TrophyIcon className="w-4 h-4" />
-                <span className="text-sm">
+                <span className="text-xs xs:text-sm">
                   High Score: {highScores[diff.value]}
                 </span>
               </div>
@@ -199,7 +199,7 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
           scale: 0.95,
         }}
         onClick={() => onStart(selectedDifficulty)}
-        className="px-12 py-4 text-xl font-bold rounded-xl bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all orbitron-text start-button-soft"
+        className="px-8 xs:px-12 py-3 xs:py-4 text-base xs:text-xl font-bold rounded-lg xs:rounded-xl bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all orbitron-text start-button-soft touch-target"
       >
         START GAME
       </motion.button>
@@ -214,7 +214,7 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
         transition={{
           delay: 1,
         }}
-        className="mt-8 text-gray-500 text-sm"
+        className="mt-6 xs:mt-8 text-gray-500 text-xs xs:text-sm text-center px-4 xs:px-0"
       >
         Use arrow keys to select difficulty • Press Enter to start
       </motion.p>

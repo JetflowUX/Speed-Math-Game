@@ -119,22 +119,22 @@ export function GameScreen({
       transition={{ x: { duration: 0.5 } }}
       className={`flex flex-col min-h-screen bg-[#0a0a1a] text-white p-6 game-surface ${feedback === "correct" ? "bg-[#00ff88]/8" : feedback === "wrong" ? "bg-[#ff3355]/8" : ""}`}
     >
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="flex justify-between items-start mb-8 p-4 rounded-xl bg-slate-900/35 border border-slate-700/60">
+      <div className="w-full max-w-5xl mx-auto px-2 sm:px-0">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-start gap-4 xs:gap-0 mb-4 xs:mb-8 p-3 xs:p-4 rounded-lg xs:rounded-xl bg-slate-900/35 border border-slate-700/60">
           <div>
-            <div className="text-4xl md:text-5xl font-bold mb-2 orbitron-text score-display-soft">
+            <div className="text-3xl xs:text-4xl sm:text-5xl font-bold mb-1 xs:mb-2 orbitron-text score-display-soft">
               {stats.score.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-400">SCORE</div>
+            <div className="text-xs xs:text-sm text-gray-400">SCORE</div>
           </div>
           <LivesDisplay lives={stats.lives} maxLives={3} />
         </div>
 
-        <div className="mb-8">
+        <div className="mb-6 xs:mb-8">
           <TimerBar duration={stats.timePerQuestion} onTimeout={onTimeout} />
         </div>
 
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6 xs:mb-8">
           <ComboCounter combo={stats.combo} />
         </div>
 
@@ -144,42 +144,42 @@ export function GameScreen({
               initial={{ scale: 0, y: -50 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0, opacity: 0 }}
-              className="flex justify-center mb-6"
+              className="flex justify-center mb-4 xs:mb-6"
             >
-              <div className="flex items-center gap-3 px-6 py-3 bg-[#ffaa00]/12 border border-[#ffaa00]/60 rounded-lg powerup-banner-soft">
+              <div className="flex flex-col xs:flex-row items-center gap-2 xs:gap-3 px-4 xs:px-6 py-2 xs:py-3 text-xs xs:text-sm bg-[#ffaa00]/12 border border-[#ffaa00]/60 rounded-lg powerup-banner-soft">
                 <span className="text-[#ffaa00]">
                   {getPowerUpIcon(powerUp.type)}
                 </span>
                 <span className="text-[#ffaa00] font-bold">
                   {getPowerUpLabel(powerUp.type)}
                 </span>
-                <span className="text-sm text-gray-300">(Press SPACE)</span>
+                <span className="text-xs text-gray-300">(Space)</span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-slate-900/35 border border-slate-700/60 p-6 md:p-10">
+        <div className="flex-1 flex flex-col items-center justify-center rounded-lg xs:rounded-2xl bg-slate-900/35 border border-slate-700/60 p-4 xs:p-6 sm:p-10 my-4 xs:my-6">
           <motion.div
             key={question.displayText}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="text-center mb-12"
+            className="text-center mb-6 xs:mb-10 sm:mb-12 w-full"
           >
-            <div className="text-6xl md:text-8xl font-bold mb-4 orbitron-text question-display-soft">
+            <div className="text-4xl xs:text-6xl sm:text-7xl md:text-8xl font-bold mb-2 xs:mb-4 orbitron-text question-display-soft break-words">
               {question.displayText}
             </div>
-            <div className="text-2xl text-gray-400">= ?</div>
+            <div className="text-lg xs:text-2xl text-gray-400">= ?</div>
           </motion.div>
 
-          <form onSubmit={handleSubmit} className="w-full max-w-md">
+          <form onSubmit={handleSubmit} className="w-full max-w-md px-2 xs:px-0">
             <input
               ref={inputRef}
               type="number"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              className="w-full px-6 py-4 text-4xl text-center font-bold bg-slate-900/60 border border-cyan-300/45 rounded-xl focus:outline-none focus:border-emerald-300 transition-all orbitron-text answer-input-soft"
+              className="w-full px-4 xs:px-6 py-3 xs:py-4 text-2xl xs:text-4xl text-center font-bold bg-slate-900/60 border border-cyan-300/45 rounded-lg xs:rounded-xl focus:outline-none focus:border-emerald-300 transition-all orbitron-text answer-input-soft"
               placeholder="?"
               autoComplete="off"
               disabled={feedback !== null}
@@ -190,14 +190,14 @@ export function GameScreen({
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-6 text-2xl text-[#ff3355] font-bold wrong-answer-soft"
+              className="mt-4 xs:mt-6 text-lg xs:text-2xl text-[#ff3355] font-bold wrong-answer-soft text-center"
             >
               Correct answer: {question.answer}
             </motion.div>
           )}
         </div>
 
-        <div className="flex justify-between items-center text-sm text-gray-400">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-2 xs:gap-4 mt-4 xs:mt-6 text-xs xs:text-sm text-gray-400">
           <div>Problems: {stats.problemsSolved}</div>
           <div>
             Accuracy:{" "}
