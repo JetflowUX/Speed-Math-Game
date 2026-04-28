@@ -109,9 +109,9 @@ export class QuestionGenerator {
   }
 
   public getAdjustedTime(baseTime: number): number {
-    // Gradually decrease time as problems increase
-    const reduction = Math.floor(this.problemCount / 10) * 0.5;
-    return Math.max(2, baseTime - reduction);
+    // Gradually decrease time as problems increase, but at a slower rate
+    const reduction = Math.floor(this.problemCount / 15) * 0.3;
+    return Math.max(3, baseTime - reduction);
   }
 
   public reset(): void {

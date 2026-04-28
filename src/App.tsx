@@ -15,11 +15,11 @@ const MAX_LIVES = 3;
 const getBaseTime = (difficulty: Difficulty): number => {
   switch (difficulty) {
     case "easy":
-      return 8;
+      return 12;
     case "medium":
-      return 6;
+      return 10;
     case "hard":
-      return 5;
+      return 8;
   }
 };
 export function App() {
@@ -37,7 +37,7 @@ export function App() {
     totalProblems: 0,
     correctAnswers: 0,
     difficulty: "easy",
-    timePerQuestion: 8,
+    timePerQuestion: 12,
   });
   const [highScores, setHighScores] = useState<Record<Difficulty, number>>({
     easy: 0,
@@ -124,6 +124,7 @@ export function App() {
       const points = basePoints * multiplier * doubleMultiplier;
       setStats((prev) => {
         const newCombo = isCorrect ? prev.combo + 1 : 0;
+        const timeBonus = isCorrect ? 2 : 0; // Add 2 seconds for correct answers
         const newStats = {
           ...prev,
           score: isCorrect ? prev.score + points : prev.score,
@@ -137,6 +138,9 @@ export function App() {
           correctAnswers: isCorrect
             ? prev.correctAnswers + 1
             : prev.correctAnswers,
+          timePerQuestion: isCorrect
+            ? prev.timePerQuestion + timeBonus
+            : prev.timePerQuestion,
         };
         if (newStats.lives <= 0) {
           const achievedNewHighScore = newStats.score > highScores[difficulty];
