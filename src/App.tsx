@@ -303,6 +303,7 @@ export function App() {
         ref={keyboardPrimeRef}
         type="text"
         inputMode="numeric"
+        pattern="[0-9]*"
         tabIndex={-1}
         aria-hidden="true"
         autoComplete="off"

@@ -370,15 +370,24 @@ export function GameScreen({
               <input
                 id="answer-input"
                 ref={inputRef}
-                type="number"
+                // text + inputMode=numeric gives a reliable digits-only keypad
+                // on iOS (type=number is inconsistent there) and matches the
+                // primer input, so the keyboard doesn't flip during hand-off.
+                type="text"
                 inputMode="numeric"
+                pattern="[0-9]*"
                 enterKeyHint="go"
+                autoCorrect="off"
+                spellCheck={false}
                 value={answer}
                 // Only accept input while the round is live; never `disabled`,
                 // which would blur the field and dismiss the mobile keyboard
-                // between questions.
+                // between questions. Answers are always non-negative integers,
+                // so strip anything that isn't a digit.
                 onChange={(e) => {
-                  if (phaseRef.current === "active") setAnswer(e.target.value);
+                  if (phaseRef.current === "active") {
+                    setAnswer(e.target.value.replace(/[^0-9]/g, ""));
+                  }
                 }}
                 className={`flex-1 min-w-0 px-4 xs:px-6 py-3 xs:py-4 short:py-2 text-2xl xs:text-4xl short:text-xl text-center font-bold bg-slate-900/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
                   feedback && phase === "reveal"
