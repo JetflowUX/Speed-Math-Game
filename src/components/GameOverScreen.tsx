@@ -86,7 +86,7 @@ export function GameOverScreen({
       animate={{
         opacity: 1,
       }}
-      className="screen-shell flex flex-col items-center justify-center min-h-screen bg-[#0a0a1a] text-white px-4 py-6"
+      className="screen-shell screen-pad flex flex-col items-center justify-center bg-[#0a0a1a] text-white game-surface"
     >
       <div className="screen-card w-full max-w-3xl rounded-3xl px-5 py-8 xs:px-8 xs:py-10 md:px-10 md:py-12">
         <motion.h1

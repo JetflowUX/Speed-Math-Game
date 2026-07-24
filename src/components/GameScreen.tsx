@@ -235,7 +235,7 @@ export function GameScreen({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, x: shake ? [-9, 9, -7, 7, 0] : 0 }}
       transition={{ x: { duration: 0.45 } }}
-      className={`screen-shell flex flex-col min-h-screen bg-[#0a0a1a] text-white p-4 xs:p-6 game-surface ${
+      className={`screen-shell screen-pad flex flex-col bg-[#0a0a1a] text-white game-surface ${
         feedback && phase === "reveal"
           ? feedback.isCorrect
             ? "bg-[#00ff88]/8"
@@ -245,7 +245,7 @@ export function GameScreen({
     >
       <div className="w-full max-w-5xl mx-auto px-2 sm:px-0 flex flex-col flex-1">
         {/* Top bar */}
-        <div className="flex items-center justify-between gap-3 mb-4 xs:mb-6">
+        <div className="flex items-center justify-between gap-3 mb-3 xs:mb-6 short:mb-2">
           <span className="ui-chip">Difficulty {stats.difficulty}</span>
           <div className="flex items-center gap-2">
             <button
@@ -268,9 +268,9 @@ export function GameScreen({
         </div>
 
         {/* Score + lives */}
-        <div className="flex justify-between items-center gap-4 mb-4 xs:mb-6 p-3 xs:p-4 rounded-2xl screen-card border border-slate-700/60">
+        <div className="flex justify-between items-center gap-4 mb-3 xs:mb-6 short:mb-2 p-3 xs:p-4 short:p-2 rounded-2xl screen-card border border-slate-700/60">
           <div>
-            <div className="text-3xl xs:text-4xl sm:text-5xl font-bold mb-1 orbitron-text score-display-soft tabular-nums">
+            <div className="text-2xl xs:text-4xl sm:text-5xl short:text-2xl font-bold mb-1 orbitron-text score-display-soft tabular-nums">
               {stats.score.toLocaleString()}
             </div>
             <div className="text-[0.6rem] xs:text-sm tracking-[0.22em] text-gray-400 uppercase">
@@ -281,7 +281,7 @@ export function GameScreen({
         </div>
 
         {/* Timer */}
-        <div className="mb-4 xs:mb-6">
+        <div className="mb-3 xs:mb-6 short:mb-2">
           <TimerBar
             durationSec={stats.timePerQuestion}
             resetKey={questionId}
@@ -291,7 +291,7 @@ export function GameScreen({
         </div>
 
         {/* Combo */}
-        <div className="flex justify-center items-center min-h-[2.5rem] mb-3 xs:mb-4">
+        <div className="flex justify-center items-center min-h-[2.25rem] short:min-h-0 mb-2 xs:mb-4 short:mb-1">
           <ComboCounter combo={stats.combo} />
         </div>
 
@@ -322,7 +322,7 @@ export function GameScreen({
         </AnimatePresence>
 
         {/* Question area */}
-        <div className="relative flex-1 flex flex-col items-center justify-center rounded-2xl bg-slate-900/35 border border-slate-700/60 p-4 xs:p-6 sm:p-10 mb-4 screen-card">
+        <div className="relative flex-1 flex flex-col items-center justify-center rounded-2xl bg-slate-900/35 border border-slate-700/60 p-4 xs:p-6 sm:p-10 short:p-3 mb-3 xs:mb-4 short:mb-2 min-h-0 screen-card">
           {doubleActive && (
             <div className="absolute top-3 right-3 flex items-center gap-1 text-[0.6rem] xs:text-xs font-bold text-[#ffaa00] uppercase tracking-widest">
               <Zap className="w-4 h-4" /> 2× active
@@ -334,12 +334,12 @@ export function GameScreen({
             initial={{ scale: reduceMotion ? 1 : 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: phase === "countdown" ? 0.25 : 1 }}
             transition={{ type: "spring", stiffness: 220, damping: 20 }}
-            className="text-center mb-5 xs:mb-8 w-full"
+            className="text-center mb-4 xs:mb-8 short:mb-2 w-full"
           >
-            <div className="text-4xl xs:text-6xl sm:text-7xl md:text-8xl font-bold mb-2 xs:mb-4 orbitron-text question-display-soft break-words leading-none">
+            <div className="text-4xl xs:text-6xl sm:text-7xl md:text-8xl short:text-3xl font-bold mb-2 xs:mb-4 short:mb-1 orbitron-text question-display-soft break-words leading-none">
               {question.displayText}
             </div>
-            <div className="text-sm xs:text-lg text-gray-400 tracking-[0.2em] uppercase">
+            <div className="text-xs xs:text-lg short:text-[0.7rem] text-gray-400 tracking-[0.2em] uppercase">
               {feedback && phase === "reveal"
                 ? feedback.isCorrect
                   ? "Correct!"
@@ -359,7 +359,7 @@ export function GameScreen({
               inputMode="numeric"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              className={`w-full px-4 xs:px-6 py-3 xs:py-4 text-2xl xs:text-4xl text-center font-bold bg-slate-900/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
+              className={`w-full px-4 xs:px-6 py-3 xs:py-4 short:py-2 text-2xl xs:text-4xl short:text-xl text-center font-bold bg-slate-900/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
                 feedback && phase === "reveal"
                   ? feedback.isCorrect
                     ? "border-emerald-400"
@@ -375,7 +375,7 @@ export function GameScreen({
 
           <div
             id="answer-hint"
-            className="mt-4 text-center text-[0.6rem] xs:text-xs tracking-[0.18em] uppercase text-slate-400"
+            className="mt-3 xs:mt-4 short:hidden text-center text-[0.6rem] xs:text-xs tracking-[0.18em] uppercase text-slate-400"
           >
             Faster answers &amp; longer streaks score more
           </div>

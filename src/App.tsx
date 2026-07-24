@@ -279,7 +279,7 @@ export function App() {
       : 0;
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-[100dvh]">
       <AnimatePresence mode="wait">
         {gameState === "start" && (
           <StartScreen

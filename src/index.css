@@ -8,18 +8,54 @@
 
 /* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
 
+html {
+  /* Stop iOS from inflating font sizes in landscape. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: radial-gradient(circle at 20% 20%, #111b35 0%, #0a0a1a 55%, #070712 100%);
+  /* Never allow sideways scrolling on any screen size. */
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .screen-shell {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  /* Fill the *visible* viewport — dvh accounts for mobile browser chrome so
+     content isn't hidden behind the address bar. Falls back to vh. */
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Outer screen padding that grows into device safe areas (notches, home
+   indicator) instead of being clipped by them. Replaces the shells' base
+   padding so there's no shorthand/longhand cascade conflict. */
+.screen-pad {
+  padding-top: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+@media (min-width: 475px) {
+  .screen-pad {
+    padding-top: 1.5rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+  }
 }
 
 .screen-shell::before,

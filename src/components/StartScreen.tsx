@@ -82,7 +82,7 @@ export function StartScreen({
       exit={{
         opacity: 0,
       }}
-      className="screen-shell flex flex-col items-center justify-center min-h-screen bg-[#0a0a1a] text-white px-4 py-6 game-surface"
+      className="screen-shell screen-pad flex flex-col items-center justify-center bg-[#0a0a1a] text-white game-surface"
     >
       <button
         type="button"
