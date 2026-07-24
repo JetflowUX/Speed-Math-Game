@@ -231,6 +231,31 @@ input[type="number"] {
   min-width: 2.75rem; /* 44px */
 }
 
+.submit-button-soft {
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.28);
+}
+
+/* Off-screen input used purely to open the mobile keyboard from the START
+   gesture. Must stay focusable (no display:none / visibility:hidden) and use a
+   >=16px font so iOS doesn't zoom when it briefly gains focus. */
+.keyboard-prime {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  color: transparent;
+  background: transparent;
+  caret-color: transparent;
+}
+
 .icon-button {
   display: inline-flex;
   align-items: center;

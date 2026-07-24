@@ -14,15 +14,24 @@ interface StartScreenProps {
   highScores: Record<Difficulty, number>;
   muted: boolean;
   onToggleMute: () => void;
+  onPrimeKeyboard: () => void;
 }
 export function StartScreen({
   onStart,
   highScores,
   muted,
   onToggleMute,
+  onPrimeKeyboard,
 }: StartScreenProps) {
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty>("easy");
+
+  // Open the mobile keyboard (via the primer input) and start, in that order,
+  // all within this gesture so the browser allows the keyboard to appear.
+  const handleStart = (difficulty: Difficulty) => {
+    onPrimeKeyboard();
+    onStart(difficulty);
+  };
   const difficulties: {
     value: Difficulty;
     label: string;
@@ -65,12 +74,13 @@ export function StartScreen({
         });
       } else if (e.key === "Enter") {
         e.preventDefault();
+        onPrimeKeyboard();
         onStart(selectedDifficulty);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedDifficulty, onStart]);
+  }, [selectedDifficulty, onStart, onPrimeKeyboard]);
   return (
     <motion.div
       initial={{
@@ -251,7 +261,7 @@ export function StartScreen({
             whileTap={{
               scale: 0.95,
             }}
-            onClick={() => onStart(selectedDifficulty)}
+            onClick={() => handleStart(selectedDifficulty)}
             className="w-full px-8 xs:px-12 py-3 xs:py-4 text-base xs:text-xl font-bold rounded-xl bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all orbitron-text start-button-soft touch-target"
           >
             START GAME

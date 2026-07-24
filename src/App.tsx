@@ -67,6 +67,9 @@ export function App() {
   const difficultyRef = useRef<Difficulty>("easy");
   const highScoresRef = useRef(highScores);
   const pendingGameOverRef = useRef(false);
+  // Off-screen input focused on the START tap so the mobile keyboard opens
+  // immediately, before the real answer input has mounted.
+  const keyboardPrimeRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     statsRef.current = stats;
@@ -113,6 +116,19 @@ export function App() {
       setMuted(next);
       return next;
     });
+  }, []);
+
+  // Must run synchronously inside the START tap handler: mobile browsers only
+  // raise the keyboard when focus() happens within a user gesture. The real
+  // answer input mounts later (after the countdown), so we focus this hidden
+  // input first; GameScreen then hands focus to the real input, and the
+  // keyboard stays up throughout.
+  const primeKeyboard = useCallback(() => {
+    const isTouch =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    if (!isTouch) return;
+    keyboardPrimeRef.current?.focus({ preventScroll: true });
   }, []);
 
   const startGame = useCallback((selectedDifficulty: Difficulty) => {
@@ -280,6 +296,18 @@ export function App() {
 
   return (
     <div className="w-full min-h-[100dvh]">
+      {/* Persistent, always-mounted primer input (see primeKeyboard). Lives
+          outside AnimatePresence so it isn't unmounted during the
+          start → game transition, which would drop the keyboard. */}
+      <input
+        ref={keyboardPrimeRef}
+        type="text"
+        inputMode="numeric"
+        tabIndex={-1}
+        aria-hidden="true"
+        autoComplete="off"
+        className="keyboard-prime"
+      />
       <AnimatePresence mode="wait">
         {gameState === "start" && (
           <StartScreen
@@ -288,6 +316,7 @@ export function App() {
             highScores={highScores}
             muted={muted}
             onToggleMute={toggleMute}
+            onPrimeKeyboard={primeKeyboard}
           />
         )}
         {gameState === "playing" && question && (

@@ -11,7 +11,7 @@ import { TimerBar } from "./TimerBar";
 import { LivesDisplay } from "./LivesDisplay";
 import { ComboCounter } from "./ComboCounter";
 import { FloatingScore } from "./FloatingScore";
-import { ClockIcon, Zap, Volume2, VolumeX, LogOut } from "lucide-react";
+import { ClockIcon, Zap, Volume2, VolumeX, LogOut, CornerDownLeft } from "lucide-react";
 import { sounds } from "../utils/sound";
 
 interface GameScreenProps {
@@ -185,12 +185,26 @@ export function GameScreen({
     [onCommit, onAdvance, reduceMotion],
   );
 
+  const submitAnswer = useCallback(() => {
+    if (phaseRef.current !== "active") {
+      // Keep the on-screen keyboard up even if they tap submit early.
+      inputRef.current?.focus();
+      return;
+    }
+    const numAnswer = parseInt(inputRef.current?.value ?? answer, 10);
+    if (Number.isNaN(numAnswer)) {
+      inputRef.current?.focus();
+      return;
+    }
+    commit(numAnswer);
+    // Refocus within the same tap/gesture so mobile keyboards stay open
+    // between questions instead of dismissing after every answer.
+    inputRef.current?.focus();
+  }, [answer, commit]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phaseRef.current !== "active") return;
-    const numAnswer = parseInt(answer, 10);
-    if (Number.isNaN(numAnswer)) return;
-    commit(numAnswer);
+    submitAnswer();
   };
 
   const handleTimeout = useCallback(() => commit(null), [commit]);
@@ -352,25 +366,41 @@ export function GameScreen({
             <label htmlFor="answer-input" className="sr-only">
               Your answer
             </label>
-            <input
-              id="answer-input"
-              ref={inputRef}
-              type="number"
-              inputMode="numeric"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className={`w-full px-4 xs:px-6 py-3 xs:py-4 short:py-2 text-2xl xs:text-4xl short:text-xl text-center font-bold bg-slate-900/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
-                feedback && phase === "reveal"
-                  ? feedback.isCorrect
-                    ? "border-emerald-400"
-                    : "border-[#ff3355]"
-                  : "border-cyan-300/45 focus:border-emerald-300"
-              }`}
-              placeholder="?"
-              autoComplete="off"
-              disabled={phase !== "active"}
-              aria-describedby="answer-hint"
-            />
+            <div className="flex items-stretch gap-2 xs:gap-3">
+              <input
+                id="answer-input"
+                ref={inputRef}
+                type="number"
+                inputMode="numeric"
+                enterKeyHint="go"
+                value={answer}
+                // Only accept input while the round is live; never `disabled`,
+                // which would blur the field and dismiss the mobile keyboard
+                // between questions.
+                onChange={(e) => {
+                  if (phaseRef.current === "active") setAnswer(e.target.value);
+                }}
+                className={`flex-1 min-w-0 px-4 xs:px-6 py-3 xs:py-4 short:py-2 text-2xl xs:text-4xl short:text-xl text-center font-bold bg-slate-900/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
+                  feedback && phase === "reveal"
+                    ? feedback.isCorrect
+                      ? "border-emerald-400"
+                      : "border-[#ff3355]"
+                    : "border-cyan-300/45 focus:border-emerald-300"
+                }`}
+                placeholder="?"
+                autoComplete="off"
+                aria-describedby="answer-hint"
+              />
+              <button
+                type="submit"
+                aria-label="Submit answer"
+                // Prevent the tap from stealing focus so the keyboard stays open.
+                onMouseDown={(e) => e.preventDefault()}
+                className="shrink-0 flex items-center justify-center px-4 xs:px-5 rounded-lg xs:rounded-xl bg-[#00ff88] text-[#0a0a1a] font-bold transition-transform active:scale-95 touch-target submit-button-soft"
+              >
+                <CornerDownLeft className="w-6 h-6 xs:w-7 xs:h-7" />
+              </button>
+            </div>
           </form>
 
           <div
