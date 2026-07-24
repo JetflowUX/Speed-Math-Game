@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { TrophyIcon, TargetIcon, ZapIcon, CheckCircleIcon } from "lucide-react";
 import { Difficulty } from "../utils/gameTypes";
@@ -26,6 +26,20 @@ export function GameOverScreen({
   onRestart,
   onMenu,
 }: GameOverScreenProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        onRestart();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        onMenu();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onRestart, onMenu]);
+
   const stats = [
     {
       icon: TargetIcon,
@@ -242,6 +256,10 @@ export function GameOverScreen({
             MAIN MENU
           </motion.button>
         </div>
+
+        <p className="text-gray-500 text-xs xs:text-sm text-center mt-5 xs:mt-6">
+          Press Enter to play again • Esc for the menu
+        </p>
       </div>
     </motion.div>
   );

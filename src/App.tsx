@@ -1,17 +1,25 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { StartScreen } from "./components/StartScreen";
 import { GameScreen } from "./components/GameScreen";
 import { GameOverScreen } from "./components/GameOverScreen";
 import { QuestionGenerator } from "./utils/questionGenerator";
+import { computePoints } from "./utils/scoring";
+import { isMuted, setMuted, sounds, unlockAudio } from "./utils/sound";
 import {
   GameState,
   Difficulty,
   Question,
   GameStats,
   PowerUp,
+  AnswerResult,
 } from "./utils/gameTypes";
+
 const MAX_LIVES = 3;
+const POWERUP_MIN_SOLVED = 4;
+const POWERUP_CHANCE = 0.14;
+const EXTRA_TIME_SECONDS = 4;
+
 const getBaseTime = (difficulty: Difficulty): number => {
   switch (difficulty) {
     case "easy":
@@ -22,23 +30,25 @@ const getBaseTime = (difficulty: Difficulty): number => {
       return 8;
   }
 };
+
+const createStats = (difficulty: Difficulty): GameStats => ({
+  score: 0,
+  lives: MAX_LIVES,
+  combo: 0,
+  maxCombo: 0,
+  problemsSolved: 0,
+  totalProblems: 0,
+  correctAnswers: 0,
+  difficulty,
+  timePerQuestion: getBaseTime(difficulty),
+});
+
 export function App() {
   const [gameState, setGameState] = useState<GameState>("start");
   const [difficulty, setDifficulty] = useState<Difficulty>("easy");
   const [question, setQuestion] = useState<Question | null>(null);
-  const [questionGenerator, setQuestionGenerator] =
-    useState<QuestionGenerator | null>(null);
-  const [stats, setStats] = useState<GameStats>({
-    score: 0,
-    lives: MAX_LIVES,
-    combo: 0,
-    maxCombo: 0,
-    problemsSolved: 0,
-    totalProblems: 0,
-    correctAnswers: 0,
-    difficulty: "easy",
-    timePerQuestion: 12,
-  });
+  const [questionId, setQuestionId] = useState(0);
+  const [stats, setStats] = useState<GameStats>(() => createStats("easy"));
   const [highScores, setHighScores] = useState<Record<Difficulty, number>>({
     easy: 0,
     medium: 0,
@@ -46,168 +56,228 @@ export function App() {
   });
   const [isNewHighScore, setIsNewHighScore] = useState(false);
   const [powerUp, setPowerUp] = useState<PowerUp | null>(null);
-  const [startTime, setStartTime] = useState<number>(0);
-  // Load high scores from localStorage
+  const [muted, setMutedState] = useState(isMuted());
+
+  // Refs mirror state so the answer/advance callbacks read fresh values without
+  // stale closures and without needing to re-create themselves every render.
+  const generatorRef = useRef<QuestionGenerator | null>(null);
+  const questionRef = useRef<Question | null>(null);
+  const statsRef = useRef<GameStats>(stats);
+  const powerUpRef = useRef<PowerUp | null>(null);
+  const difficultyRef = useRef<Difficulty>("easy");
+  const highScoresRef = useRef(highScores);
+  const pendingGameOverRef = useRef(false);
+
   useEffect(() => {
-    const savedScores = localStorage.getItem("speedMathHighScores");
-    if (savedScores) {
-      setHighScores(JSON.parse(savedScores));
+    statsRef.current = stats;
+  }, [stats]);
+  useEffect(() => {
+    highScoresRef.current = highScores;
+  }, [highScores]);
+  useEffect(() => {
+    difficultyRef.current = difficulty;
+  }, [difficulty]);
+
+  // Load high scores from localStorage.
+  useEffect(() => {
+    const saved = localStorage.getItem("speedMathHighScores");
+    if (!saved) return;
+    try {
+      const parsed = JSON.parse(saved);
+      setHighScores({
+        easy: Number(parsed.easy) || 0,
+        medium: Number(parsed.medium) || 0,
+        hard: Number(parsed.hard) || 0,
+      });
+    } catch {
+      /* ignore corrupt data */
     }
   }, []);
-  const saveHighScore = useCallback((difficulty: Difficulty, score: number) => {
+
+  const saveHighScore = useCallback((diff: Difficulty, score: number) => {
     setHighScores((prev) => {
-      const newScores = {
-        ...prev,
-      };
-      if (score > newScores[difficulty]) {
-        newScores[difficulty] = score;
-        localStorage.setItem("speedMathHighScores", JSON.stringify(newScores));
+      if (score <= prev[diff]) return prev;
+      const next = { ...prev, [diff]: score };
+      try {
+        localStorage.setItem("speedMathHighScores", JSON.stringify(next));
+      } catch {
+        /* ignore */
       }
-      return newScores;
+      return next;
     });
   }, []);
+
+  const toggleMute = useCallback(() => {
+    setMutedState((prev) => {
+      const next = !prev;
+      setMuted(next);
+      return next;
+    });
+  }, []);
+
   const startGame = useCallback((selectedDifficulty: Difficulty) => {
+    unlockAudio(); // Called from a click, so audio can start.
     const generator = new QuestionGenerator(selectedDifficulty);
     const firstQuestion = generator.generateQuestion();
-    const baseTime = getBaseTime(selectedDifficulty);
+    const freshStats = createStats(selectedDifficulty);
+
+    generatorRef.current = generator;
+    questionRef.current = firstQuestion;
+    statsRef.current = freshStats;
+    powerUpRef.current = null;
+    difficultyRef.current = selectedDifficulty;
+    pendingGameOverRef.current = false;
+
     setDifficulty(selectedDifficulty);
-    setQuestionGenerator(generator);
     setQuestion(firstQuestion);
-    setStats({
-      score: 0,
-      lives: MAX_LIVES,
-      combo: 0,
-      maxCombo: 0,
-      problemsSolved: 0,
-      totalProblems: 0,
-      correctAnswers: 0,
-      difficulty: selectedDifficulty,
-      timePerQuestion: baseTime,
-    });
+    setQuestionId(0);
+    setStats(freshStats);
     setPowerUp(null);
     setIsNewHighScore(false);
-    setStartTime(Date.now());
     setGameState("playing");
   }, []);
-  const generateNextQuestion = useCallback(() => {
-    if (!questionGenerator) return;
-    const newQuestion = questionGenerator.generateQuestion();
-    const baseTime = getBaseTime(difficulty);
-    const adjustedTime = questionGenerator.getAdjustedTime(baseTime);
-    setQuestion(newQuestion);
-    setStats((prev) => ({
-      ...prev,
-      timePerQuestion: adjustedTime,
-    }));
-    setStartTime(Date.now());
-    // Random power-up generation (10% chance every question after 5 problems)
-    if (stats.problemsSolved >= 5 && Math.random() < 0.1 && !powerUp) {
-      const powerUpType = Math.random() < 0.5 ? "extraTime" : "doubleScore";
-      setPowerUp({
-        type: powerUpType,
-        active: false,
-      });
-    }
-  }, [questionGenerator, difficulty, stats.problemsSolved, powerUp]);
-  const handleAnswer = useCallback(
-    (answer: number) => {
-      if (!question) return;
-      const isCorrect = answer === question.answer;
-      const timeElapsed = (Date.now() - startTime) / 1000;
-      const speedBonus = Math.floor(
-        (1 - timeElapsed / stats.timePerQuestion) * 10,
-      );
-      const basePoints = 10 + Math.max(0, speedBonus);
-      const multiplier = Math.min(stats.combo + 1, 10);
-      const doubleMultiplier =
-        powerUp?.type === "doubleScore" && powerUp.active ? 2 : 1;
-      const points = basePoints * multiplier * doubleMultiplier;
-      setStats((prev) => {
-        const newCombo = isCorrect ? prev.combo + 1 : 0;
-        const timeBonus = isCorrect ? 2 : 0; // Add 2 seconds for correct answers
-        const newStats = {
-          ...prev,
-          score: isCorrect ? prev.score + points : prev.score,
-          lives: isCorrect ? prev.lives : prev.lives - 1,
-          combo: newCombo,
-          maxCombo: Math.max(prev.maxCombo, newCombo),
-          problemsSolved: isCorrect
-            ? prev.problemsSolved + 1
-            : prev.problemsSolved,
-          totalProblems: prev.totalProblems + 1,
-          correctAnswers: isCorrect
-            ? prev.correctAnswers + 1
-            : prev.correctAnswers,
-          timePerQuestion: isCorrect
-            ? prev.timePerQuestion + timeBonus
-            : prev.timePerQuestion,
-        };
-        if (newStats.lives <= 0) {
-          const achievedNewHighScore = newStats.score > highScores[difficulty];
-          setIsNewHighScore(achievedNewHighScore);
-          saveHighScore(difficulty, newStats.score);
-          setTimeout(() => setGameState("gameover"), 500);
-        }
-        return newStats;
-      });
-      // Clear power-up after use
-      if (powerUp?.active) {
+
+  const maybeSpawnPowerUp = useCallback(() => {
+    if (powerUpRef.current) return;
+    if (statsRef.current.problemsSolved < POWERUP_MIN_SOLVED) return;
+    if (Math.random() >= POWERUP_CHANCE) return;
+    const type = Math.random() < 0.5 ? "extraTime" : "doubleScore";
+    const next: PowerUp = { type, active: false };
+    powerUpRef.current = next;
+    setPowerUp(next);
+  }, []);
+
+  /** Commit an answer (or a timeout when answer === null). Returns the outcome
+   *  synchronously so the game screen can show matching feedback. */
+  const commitAnswer = useCallback(
+    (answer: number | null, timeElapsedSec: number): AnswerResult => {
+      const cur = statsRef.current;
+      const q = questionRef.current;
+      const isCorrect = q !== null && answer !== null && answer === q.answer;
+
+      const pu = powerUpRef.current;
+      const doubleScore = !!(pu && pu.type === "doubleScore" && pu.active);
+
+      const pointsEarned = isCorrect
+        ? computePoints({
+            timeElapsedSec,
+            timeLimitSec: cur.timePerQuestion,
+            combo: cur.combo,
+            doubleScore,
+          })
+        : 0;
+
+      const comboAfter = isCorrect ? cur.combo + 1 : 0;
+      const nextLives = isCorrect ? cur.lives : cur.lives - 1;
+      const isGameOver = nextLives <= 0;
+
+      const next: GameStats = {
+        ...cur,
+        score: cur.score + pointsEarned,
+        lives: nextLives,
+        combo: comboAfter,
+        maxCombo: Math.max(cur.maxCombo, comboAfter),
+        problemsSolved: cur.problemsSolved + (isCorrect ? 1 : 0),
+        totalProblems: cur.totalProblems + 1,
+        correctAnswers: cur.correctAnswers + (isCorrect ? 1 : 0),
+      };
+      statsRef.current = next;
+      setStats(next);
+
+      // A used double-score power-up is consumed.
+      if (doubleScore) {
+        powerUpRef.current = null;
         setPowerUp(null);
       }
-      if (stats.lives > 1 || isCorrect) {
-        setTimeout(generateNextQuestion, 300);
+
+      pendingGameOverRef.current = isGameOver;
+
+      if (isCorrect) {
+        if (comboAfter >= 2) sounds.combo(comboAfter);
+        else sounds.correct();
+      } else {
+        sounds.wrong();
       }
+
+      return {
+        isCorrect,
+        pointsEarned,
+        correctAnswer: q ? q.answer : 0,
+        comboAfter,
+        isGameOver,
+      };
     },
-    [
-      question,
-      startTime,
-      stats,
-      powerUp,
-      highScores,
-      difficulty,
-      saveHighScore,
-      generateNextQuestion,
-    ],
+    [],
   );
-  const handleTimeout = useCallback(() => {
-    handleAnswer(-1); // Treat timeout as wrong answer
-  }, [handleAnswer]);
-  const handleCollectPowerUp = useCallback(() => {
-    if (!powerUp || powerUp.active) return;
-    setPowerUp((prev) =>
-      prev
-        ? {
-            ...prev,
-            active: true,
-          }
-        : null,
-    );
-    if (powerUp.type === "extraTime") {
-      setStats((prev) => ({
-        ...prev,
-        timePerQuestion: prev.timePerQuestion + 3,
-      }));
-      // Reset timer by generating a new question with extra time
-      setTimeout(() => {
-        if (question) {
-          setStartTime(Date.now());
-        }
-      }, 100);
+
+  /** Advance past the reveal: either end the game or present the next question. */
+  const advance = useCallback(() => {
+    if (pendingGameOverRef.current) {
+      const finalScore = statsRef.current.score;
+      const diff = difficultyRef.current;
+      const beatBest = finalScore > highScoresRef.current[diff];
+      setIsNewHighScore(beatBest);
+      saveHighScore(diff, finalScore);
+      if (beatBest && finalScore > 0) sounds.highScore();
+      else sounds.gameOver();
+      setGameState("gameover");
+      return;
     }
-  }, [powerUp, question]);
+
+    const generator = generatorRef.current;
+    if (!generator) return;
+
+    const newQuestion = generator.generateQuestion();
+    const adjustedTime = generator.getAdjustedTime(getBaseTime(difficultyRef.current));
+
+    questionRef.current = newQuestion;
+    statsRef.current = { ...statsRef.current, timePerQuestion: adjustedTime };
+    setQuestion(newQuestion);
+    setStats((prev) => ({ ...prev, timePerQuestion: adjustedTime }));
+    setQuestionId((id) => id + 1);
+
+    maybeSpawnPowerUp();
+  }, [saveHighScore, maybeSpawnPowerUp]);
+
+  const collectPowerUp = useCallback(() => {
+    const pu = powerUpRef.current;
+    if (!pu || pu.active) return;
+    sounds.powerup();
+
+    if (pu.type === "extraTime") {
+      // Extend the current question's timer (same questionId → TimerBar extends).
+      const nextTime = statsRef.current.timePerQuestion + EXTRA_TIME_SECONDS;
+      statsRef.current = { ...statsRef.current, timePerQuestion: nextTime };
+      setStats((prev) => ({ ...prev, timePerQuestion: nextTime }));
+      powerUpRef.current = null;
+      setPowerUp(null);
+    } else {
+      // Double score arms for the next answer.
+      const active = { ...pu, active: true };
+      powerUpRef.current = active;
+      setPowerUp(active);
+    }
+  }, []);
+
   const handleRestart = useCallback(() => {
-    startGame(difficulty);
-  }, [difficulty, startGame]);
+    startGame(difficultyRef.current);
+  }, [startGame]);
+
   const handleMenu = useCallback(() => {
+    generatorRef.current = null;
+    questionRef.current = null;
+    powerUpRef.current = null;
     setGameState("start");
     setQuestion(null);
-    setQuestionGenerator(null);
+    setPowerUp(null);
     setIsNewHighScore(false);
   }, []);
+
   const accuracy =
     stats.totalProblems > 0
       ? Math.round((stats.correctAnswers / stats.totalProblems) * 100)
       : 0;
+
   return (
     <div className="w-full min-h-screen">
       <AnimatePresence mode="wait">
@@ -216,17 +286,23 @@ export function App() {
             key="start"
             onStart={startGame}
             highScores={highScores}
+            muted={muted}
+            onToggleMute={toggleMute}
           />
         )}
         {gameState === "playing" && question && (
           <GameScreen
             key="game"
             question={question}
+            questionId={questionId}
             stats={stats}
-            onAnswer={handleAnswer}
-            onTimeout={handleTimeout}
             powerUp={powerUp}
-            onCollectPowerUp={handleCollectPowerUp}
+            muted={muted}
+            onCommit={commitAnswer}
+            onAdvance={advance}
+            onCollectPowerUp={collectPowerUp}
+            onToggleMute={toggleMute}
+            onQuit={handleMenu}
           />
         )}
         {gameState === "gameover" && (

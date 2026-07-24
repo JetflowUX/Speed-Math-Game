@@ -1,12 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Difficulty } from "../utils/gameTypes";
-import { TrophyIcon, ZapIcon, ClockIcon, TargetIcon } from "lucide-react";
+import {
+  TrophyIcon,
+  ZapIcon,
+  ClockIcon,
+  TargetIcon,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 interface StartScreenProps {
   onStart: (difficulty: Difficulty) => void;
   highScores: Record<Difficulty, number>;
+  muted: boolean;
+  onToggleMute: () => void;
 }
-export function StartScreen({ onStart, highScores }: StartScreenProps) {
+export function StartScreen({
+  onStart,
+  highScores,
+  muted,
+  onToggleMute,
+}: StartScreenProps) {
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty>("easy");
   const difficulties: {
@@ -70,6 +84,14 @@ export function StartScreen({ onStart, highScores }: StartScreenProps) {
       }}
       className="screen-shell flex flex-col items-center justify-center min-h-screen bg-[#0a0a1a] text-white px-4 py-6 game-surface"
     >
+      <button
+        type="button"
+        onClick={onToggleMute}
+        aria-label={muted ? "Unmute sound" : "Mute sound"}
+        className="icon-button absolute top-4 right-4 z-10"
+      >
+        {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+      </button>
       <div className="screen-card w-full max-w-3xl rounded-3xl px-5 py-8 xs:px-8 xs:py-10 md:px-10 md:py-12 space-y-6 xs:space-y-8">
         <motion.h1
           initial={{

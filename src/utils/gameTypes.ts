@@ -30,3 +30,13 @@ export interface PowerUp {
   type: PowerUpType;
   active: boolean;
 }
+
+/** Result of committing a single answer, returned synchronously so the UI can
+ *  show feedback (including the exact points earned) that matches the score. */
+export interface AnswerResult {
+  isCorrect: boolean;
+  pointsEarned: number;
+  correctAnswer: number;
+  comboAfter: number;
+  isGameOver: boolean;
+}
