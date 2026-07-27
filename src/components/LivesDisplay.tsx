@@ -24,7 +24,7 @@ export function LivesDisplay({ lives, maxLives }: LivesDisplayProps) {
           }}
         >
           <HeartIcon
-            className={`w-6 xs:w-8 h-6 xs:h-8 ${i < lives ? "fill-[#ff3355] text-[#ff3355]" : "fill-gray-700 text-gray-700"}`}
+            className={`w-6 xs:w-8 h-6 xs:h-8 ${i < lives ? "fill-neon-red text-neon-red" : "fill-mist/20 text-mist/20"}`}
             style={
               i < lives
                 ? {

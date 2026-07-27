@@ -249,11 +249,11 @@ export function GameScreen({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, x: shake ? [-9, 9, -7, 7, 0] : 0 }}
       transition={{ x: { duration: 0.45 } }}
-      className={`screen-shell screen-pad flex flex-col bg-[#0a0a1a] text-white game-surface ${
+      className={`screen-shell screen-pad flex flex-col bg-ink-900 text-white game-surface ${
         feedback && phase === "reveal"
           ? feedback.isCorrect
-            ? "bg-[#00ff88]/8"
-            : "bg-[#ff3355]/8"
+            ? "bg-neon-green/8"
+            : "bg-neon-red/8"
           : ""
       }`}
     >
@@ -282,12 +282,12 @@ export function GameScreen({
         </div>
 
         {/* Score + lives */}
-        <div className="flex justify-between items-center gap-4 mb-3 xs:mb-6 short:mb-2 p-3 xs:p-4 short:p-2 rounded-2xl screen-card border border-slate-700/60">
+        <div className="flex justify-between items-center gap-4 mb-3 xs:mb-6 short:mb-2 p-3 xs:p-4 short:p-2 rounded-2xl screen-card border border-mist/15">
           <div>
             <div className="text-2xl xs:text-4xl sm:text-5xl short:text-2xl font-bold mb-1 orbitron-text score-display-soft tabular-nums">
               {stats.score.toLocaleString()}
             </div>
-            <div className="text-[0.6rem] xs:text-sm tracking-[0.22em] text-gray-400 uppercase">
+            <div className="text-[0.6rem] xs:text-sm tracking-[0.22em] text-mist/60 uppercase">
               Score
             </div>
           </div>
@@ -321,13 +321,13 @@ export function GameScreen({
               <button
                 type="button"
                 onClick={onCollectPowerUp}
-                className="flex items-center gap-2 xs:gap-3 px-4 xs:px-6 py-2 xs:py-3 text-xs xs:text-sm bg-[#ffaa00]/12 border border-[#ffaa00]/60 rounded-xl powerup-banner-soft touch-target"
+                className="flex items-center gap-2 xs:gap-3 px-4 xs:px-6 py-2 xs:py-3 text-xs xs:text-sm bg-neon-amber/12 border border-neon-amber/60 rounded-xl powerup-banner-soft touch-target"
               >
-                <span className="text-[#ffaa00]">{getPowerUpIcon(powerUp.type)}</span>
-                <span className="text-[#ffaa00] font-bold">
+                <span className="text-neon-amber">{getPowerUpIcon(powerUp.type)}</span>
+                <span className="text-neon-amber font-bold">
                   {getPowerUpLabel(powerUp.type)}
                 </span>
-                <span className="text-[0.65rem] xs:text-xs text-gray-300">
+                <span className="text-[0.65rem] xs:text-xs text-mist/75">
                   Tap / Space
                 </span>
               </button>
@@ -336,9 +336,9 @@ export function GameScreen({
         </AnimatePresence>
 
         {/* Question area */}
-        <div className="relative flex-1 flex flex-col items-center justify-center rounded-2xl bg-slate-900/35 border border-slate-700/60 p-4 xs:p-6 sm:p-10 short:p-3 mb-3 xs:mb-4 short:mb-2 min-h-0 screen-card">
+        <div className="relative flex-1 flex flex-col items-center justify-center rounded-2xl bg-ink-800/40 border border-mist/15 p-4 xs:p-6 sm:p-10 short:p-3 mb-3 xs:mb-4 short:mb-2 min-h-0 screen-card">
           {doubleActive && (
-            <div className="absolute top-3 right-3 flex items-center gap-1 text-[0.6rem] xs:text-xs font-bold text-[#ffaa00] uppercase tracking-widest">
+            <div className="absolute top-3 right-3 flex items-center gap-1 text-[0.6rem] xs:text-xs font-bold text-neon-amber uppercase tracking-widest">
               <Zap className="w-4 h-4" /> 2× active
             </div>
           )}
@@ -353,7 +353,7 @@ export function GameScreen({
             <div className="text-4xl xs:text-6xl sm:text-7xl md:text-8xl short:text-3xl font-bold mb-2 xs:mb-4 short:mb-1 orbitron-text question-display-soft break-words leading-none">
               {question.displayText}
             </div>
-            <div className="text-xs xs:text-lg short:text-[0.7rem] text-gray-400 tracking-[0.2em] uppercase">
+            <div className="text-xs xs:text-lg short:text-[0.7rem] text-mist/60 tracking-[0.2em] uppercase">
               {feedback && phase === "reveal"
                 ? feedback.isCorrect
                   ? "Correct!"
@@ -389,12 +389,12 @@ export function GameScreen({
                     setAnswer(e.target.value.replace(/[^0-9]/g, ""));
                   }
                 }}
-                className={`flex-1 min-w-0 px-4 xs:px-6 py-3 xs:py-4 short:py-2 text-2xl xs:text-4xl short:text-xl text-center font-bold bg-slate-900/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
+                className={`flex-1 min-w-0 px-4 xs:px-6 py-3 xs:py-4 short:py-2 text-2xl xs:text-4xl short:text-xl text-center font-bold bg-ink-800/60 border rounded-lg xs:rounded-xl focus:outline-none transition-all orbitron-text answer-input-soft ${
                   feedback && phase === "reveal"
                     ? feedback.isCorrect
-                      ? "border-emerald-400"
-                      : "border-[#ff3355]"
-                    : "border-cyan-300/45 focus:border-emerald-300"
+                      ? "border-neon-green"
+                      : "border-neon-red"
+                    : "border-neon-cyan/40 focus:border-neon-green"
                 }`}
                 placeholder="?"
                 autoComplete="off"
@@ -405,7 +405,7 @@ export function GameScreen({
                 aria-label="Submit answer"
                 // Prevent the tap from stealing focus so the keyboard stays open.
                 onMouseDown={(e) => e.preventDefault()}
-                className="shrink-0 flex items-center justify-center px-4 xs:px-5 rounded-lg xs:rounded-xl bg-[#00ff88] text-[#0a0a1a] font-bold transition-transform active:scale-95 touch-target submit-button-soft"
+                className="shrink-0 flex items-center justify-center px-4 xs:px-5 rounded-lg xs:rounded-xl bg-neon-green text-ink-900 font-bold transition-transform active:scale-95 touch-target submit-button-soft"
               >
                 <CornerDownLeft className="w-6 h-6 xs:w-7 xs:h-7" />
               </button>
@@ -414,7 +414,7 @@ export function GameScreen({
 
           <div
             id="answer-hint"
-            className="mt-3 xs:mt-4 short:hidden text-center text-[0.6rem] xs:text-xs tracking-[0.18em] uppercase text-slate-400"
+            className="mt-3 xs:mt-4 short:hidden text-center text-[0.6rem] xs:text-xs tracking-[0.18em] uppercase text-mist/60"
           >
             Faster answers &amp; longer streaks score more
           </div>
@@ -433,7 +433,7 @@ export function GameScreen({
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mt-4 xs:mt-6 text-lg xs:text-2xl text-[#ff3355] font-bold wrong-answer-soft text-center"
+                className="mt-4 xs:mt-6 text-lg xs:text-2xl text-neon-red font-bold wrong-answer-soft text-center"
               >
                 Answer: {feedback.correctAnswer}
               </motion.div>
@@ -447,7 +447,7 @@ export function GameScreen({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 flex items-center justify-center rounded-2xl bg-[#0a0a1a]/70 backdrop-blur-sm"
+                className="absolute inset-0 flex items-center justify-center rounded-2xl bg-ink-900/70 backdrop-blur-sm"
               >
                 <motion.div
                   key={countValue}
@@ -464,13 +464,13 @@ export function GameScreen({
         </div>
 
         {/* Footer stats */}
-        <div className="flex justify-between items-center gap-4 text-xs xs:text-sm text-gray-400 px-1">
+        <div className="flex justify-between items-center gap-4 text-xs xs:text-sm text-mist/60 px-1">
           <div>
-            Solved: <span className="text-slate-200 font-semibold tabular-nums">{stats.problemsSolved}</span>
+            Solved: <span className="text-mist font-semibold tabular-nums">{stats.problemsSolved}</span>
           </div>
           <div>
             Accuracy:{" "}
-            <span className="text-slate-200 font-semibold tabular-nums">{accuracyPct}%</span>
+            <span className="text-mist font-semibold tabular-nums">{accuracyPct}%</span>
           </div>
         </div>
 

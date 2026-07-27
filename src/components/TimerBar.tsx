@@ -84,7 +84,7 @@ export function TimerBar({ durationSec, resetKey, paused, onTimeout }: TimerBarP
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[0.6rem] xs:text-xs tracking-[0.2em] uppercase text-slate-400">
+        <span className="text-[0.6rem] xs:text-xs tracking-[0.2em] uppercase text-mist/60">
           Time
         </span>
         <span
@@ -98,7 +98,7 @@ export function TimerBar({ durationSec, resetKey, paused, onTimeout }: TimerBarP
         </span>
       </div>
       <div
-        className="w-full h-3 xs:h-4 bg-slate-800/80 rounded-full overflow-hidden"
+        className="w-full h-3 xs:h-4 bg-ink-800/80 rounded-full overflow-hidden"
         role="progressbar"
         aria-label="Time remaining"
         aria-valuemin={0}

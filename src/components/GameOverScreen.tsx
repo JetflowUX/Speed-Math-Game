@@ -86,7 +86,7 @@ export function GameOverScreen({
       animate={{
         opacity: 1,
       }}
-      className="screen-shell screen-pad flex flex-col items-center justify-center bg-[#0a0a1a] text-white game-surface"
+      className="screen-shell screen-pad flex flex-col items-center justify-center bg-ink-900 text-white game-surface"
     >
       <div className="screen-card w-full max-w-3xl rounded-3xl px-5 py-8 xs:px-8 xs:py-10 md:px-10 md:py-12">
         <motion.h1
@@ -105,7 +105,7 @@ export function GameOverScreen({
           }}
           className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-bold mb-4 xs:mb-6 text-center gameover-title px-4 xs:px-0"
         >
-          <span className="text-[#ff3355]">GAME OVER</span>
+          <span className="text-neon-red">GAME OVER</span>
         </motion.h1>
 
         {isNewHighScore && (
@@ -123,9 +123,9 @@ export function GameOverScreen({
               stiffness: 300,
               delay: 0.4,
             }}
-            className="mb-4 xs:mb-6 px-4 xs:px-6 py-2 xs:py-3 bg-[#ffaa00]/20 border-2 border-[#ffaa00] rounded-xl new-highscore-banner"
+            className="mb-4 xs:mb-6 px-4 xs:px-6 py-2 xs:py-3 bg-neon-amber/20 border-2 border-neon-amber rounded-xl new-highscore-banner"
           >
-            <div className="flex items-center justify-center gap-2 text-[#ffaa00] text-base xs:text-lg sm:text-xl font-bold text-center">
+            <div className="flex items-center justify-center gap-2 text-neon-amber text-base xs:text-lg sm:text-xl font-bold text-center">
               <TrophyIcon className="w-5 h-5 xs:w-6 xs:h-6" />
               <span>NEW HIGH SCORE!</span>
             </div>
@@ -145,15 +145,15 @@ export function GameOverScreen({
           className="flex flex-wrap justify-center gap-2 mb-5 xs:mb-6"
         >
           <span className="ui-chip">
-            <TargetIcon className="h-3.5 w-3.5 text-[#00f0ff]" />
+            <TargetIcon className="h-3.5 w-3.5 text-neon-cyan" />
             Difficulty {difficulty}
           </span>
           <span className="ui-chip">
-            <TrophyIcon className="h-3.5 w-3.5 text-[#ffaa00]" />
+            <TrophyIcon className="h-3.5 w-3.5 text-neon-amber" />
             Best score {highScore.toLocaleString()}
           </span>
           <span className="ui-chip">
-            <ZapIcon className="h-3.5 w-3.5 text-[#ff4db3]" />
+            <ZapIcon className="h-3.5 w-3.5 text-neon-pink" />
             Max combo {maxCombo}x
           </span>
         </motion.div>
@@ -188,13 +188,13 @@ export function GameOverScreen({
               transition={{
                 delay: 0.6 + index * 0.1,
               }}
-              className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 xs:gap-3 p-3 xs:p-4 rounded-2xl border border-gray-800 bg-gray-900/50"
+              className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 xs:gap-3 p-3 xs:p-4 rounded-2xl border border-mist/15 bg-ink-800/50"
             >
               <div className="flex items-center gap-2 xs:gap-3">
                 <stat.icon
                   className={`w-5 h-5 xs:w-6 xs:h-6 ${stat.iconClass}`}
                 />
-                <span className="text-xs xs:text-sm text-gray-300 uppercase tracking-[0.16em]">
+                <span className="text-xs xs:text-sm text-mist/75 uppercase tracking-[0.16em]">
                   {stat.label}
                 </span>
               </div>
@@ -227,7 +227,7 @@ export function GameOverScreen({
               scale: 0.95,
             }}
             onClick={onRestart}
-            className="flex-1 px-6 xs:px-8 py-2 xs:py-3 text-base xs:text-xl font-bold rounded-lg bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all gameover-button gameover-button-primary touch-target"
+            className="flex-1 px-6 xs:px-8 py-2 xs:py-3 text-base xs:text-xl font-bold rounded-lg bg-neon-green text-ink-900 hover:bg-neon-green/90 transition-all gameover-button gameover-button-primary touch-target"
           >
             PLAY AGAIN
           </motion.button>
@@ -251,13 +251,13 @@ export function GameOverScreen({
               scale: 0.95,
             }}
             onClick={onMenu}
-            className="flex-1 px-6 xs:px-8 py-2 xs:py-3 text-base xs:text-xl font-bold rounded-lg border-2 border-[#00f0ff] text-[#00f0ff] hover:bg-[#00f0ff]/10 transition-all gameover-button touch-target"
+            className="flex-1 px-6 xs:px-8 py-2 xs:py-3 text-base xs:text-xl font-bold rounded-lg border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10 transition-all gameover-button touch-target"
           >
             MAIN MENU
           </motion.button>
         </div>
 
-        <p className="text-gray-500 text-xs xs:text-sm text-center mt-5 xs:mt-6">
+        <p className="text-mist/45 text-xs xs:text-sm text-center mt-5 xs:mt-6">
           Press Enter to play again • Esc for the menu
         </p>
       </div>

@@ -35,7 +35,7 @@ export function FloatingScore({
         textShadow: "0 0 8px rgba(0, 255, 136, 0.45)",
       }}
     >
-      <span className="text-[#00ff88]">+{points}</span>
+      <span className="text-neon-green">+{points}</span>
     </motion.div>
   );
 }

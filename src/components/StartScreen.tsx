@@ -92,7 +92,7 @@ export function StartScreen({
       exit={{
         opacity: 0,
       }}
-      className="screen-shell screen-pad flex flex-col items-center justify-center bg-[#0a0a1a] text-white game-surface"
+      className="screen-shell screen-pad flex flex-col items-center justify-center bg-ink-900 text-white game-surface"
     >
       <button
         type="button"
@@ -122,7 +122,7 @@ export function StartScreen({
             textShadow: "0 0 10px rgba(0, 240, 255, 0.45)",
           }}
         >
-          <span className="text-[#00f0ff]">SPEED MATH</span>
+          <span className="text-neon-cyan">SPEED MATH</span>
         </motion.h1>
 
         <motion.h2
@@ -145,20 +145,20 @@ export function StartScreen({
             textShadow: "0 0 8px rgba(255, 0, 170, 0.4)",
           }}
         >
-          <span className="text-[#ff00aa]">BATTLE</span>
+          <span className="text-neon-magenta">BATTLE</span>
         </motion.h2>
 
         <div className="flex flex-wrap justify-center gap-2 xs:gap-3">
           <span className="ui-chip">
-            <TargetIcon className="h-3.5 w-3.5 text-[#00f0ff]" />
+            <TargetIcon className="h-3.5 w-3.5 text-neon-cyan" />
             Beat the clock
           </span>
           <span className="ui-chip">
-            <ZapIcon className="h-3.5 w-3.5 text-[#ff4db3]" />
+            <ZapIcon className="h-3.5 w-3.5 text-neon-pink" />
             Build combos
           </span>
           <span className="ui-chip">
-            <ClockIcon className="h-3.5 w-3.5 text-[#ffaa00]" />
+            <ClockIcon className="h-3.5 w-3.5 text-neon-amber" />
             Faster answers score more
           </span>
         </div>
@@ -195,7 +195,7 @@ export function StartScreen({
           }}
           className="w-full max-w-md space-y-3 xs:space-y-4 mx-auto"
         >
-          <div className="ui-section-heading text-[0.65rem] text-slate-400 text-center tracking-[0.2em]">
+          <div className="ui-section-heading text-[0.65rem] text-mist/60 text-center tracking-[0.2em]">
             Choose your pace
           </div>
           {difficulties.map((diff, index) => (
@@ -213,23 +213,23 @@ export function StartScreen({
                 delay: 0.4 + index * 0.1,
               }}
               onClick={() => setSelectedDifficulty(diff.value)}
-              className={`w-full p-4 xs:p-6 rounded-xl border transition-all touch-target text-left ${selectedDifficulty === diff.value ? "border-cyan-400/60 bg-cyan-400/10 difficulty-selected-soft" : "border-slate-700/80 bg-slate-900/45 hover:border-slate-500"}`}
+              className={`w-full p-4 xs:p-6 rounded-xl border transition-all touch-target text-left ${selectedDifficulty === diff.value ? "border-neon-cyan/50 bg-neon-cyan/10 difficulty-selected-soft" : "border-mist/15 bg-ink-800/50 hover:border-mist/40"}`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-xl xs:text-2xl font-bold mb-1 orbitron-text">
                     {diff.label}
                   </div>
-                  <div className="text-xs xs:text-sm text-gray-400">
+                  <div className="text-xs xs:text-sm text-mist/60">
                     {diff.description}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[0.65rem] tracking-[0.16em] text-slate-500 uppercase">
+                  <div className="text-[0.65rem] tracking-[0.16em] text-mist/45 uppercase">
                     {selectedDifficulty === diff.value ? "Selected" : "Tap"}
                   </div>
                   {highScores[diff.value] > 0 && (
-                    <div className="flex items-center justify-end gap-1 mt-1 text-[#ffaa00]">
+                    <div className="flex items-center justify-end gap-1 mt-1 text-neon-amber">
                       <TrophyIcon className="w-4 h-4" />
                       <span className="text-xs xs:text-sm">
                         {highScores[diff.value]}
@@ -262,7 +262,7 @@ export function StartScreen({
               scale: 0.95,
             }}
             onClick={() => handleStart(selectedDifficulty)}
-            className="w-full px-8 xs:px-12 py-3 xs:py-4 text-base xs:text-xl font-bold rounded-xl bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90 transition-all orbitron-text start-button-soft touch-target"
+            className="w-full px-8 xs:px-12 py-3 xs:py-4 text-base xs:text-xl font-bold rounded-xl bg-neon-green text-ink-900 hover:bg-neon-green/90 transition-all orbitron-text start-button-soft touch-target"
           >
             START GAME
           </motion.button>
@@ -278,7 +278,7 @@ export function StartScreen({
           transition={{
             delay: 1,
           }}
-          className="text-gray-500 text-xs xs:text-sm text-center px-4 xs:px-0"
+          className="text-mist/45 text-xs xs:text-sm text-center px-4 xs:px-0"
         >
           Use arrow keys to select difficulty • Press Enter to start
         </motion.p>
